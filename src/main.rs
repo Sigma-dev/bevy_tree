@@ -19,7 +19,11 @@ fn main() -> AppExit {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn((Camera3d::default(), EditorCam::default()));
+    commands.spawn((
+        Camera3d::default(),
+        EditorCam::default(),
+        Transform::from_translation(Vec3::ONE * 30.).looking_at(Vec3::Y * 20., Vec3::Y),
+    ));
 
     commands.spawn((
         DirectionalLight {
@@ -76,6 +80,7 @@ fn replace_materials(
                         extension: LeafMaterial {
                             color: Color::srgb(0.2, 0.6, 0.2).into(),
                             color_texture: asset_server.load("T_Leaf_01.png"),
+                            noise_texture: asset_server.load("T_Noise.png"),
                             alpha_mode: AlphaMode::Opaque,
                         },
                     })));
@@ -85,6 +90,7 @@ fn replace_materials(
                     .entity(mesh)
                     .insert(MeshMaterial3d(materials.add(StandardMaterial {
                         base_color_texture: Some(asset_server.load("T_Bark_Jagged_Albedo.png")),
+                        base_color: Color::srgb_from_array([0.8; 3]),
                         reflectance: 0.,
                         metallic: 0.,
                         perceptual_roughness: 0.,
@@ -108,6 +114,9 @@ struct LeafMaterial {
     #[texture(101)]
     #[sampler(102)]
     color_texture: Handle<Image>,
+    #[texture(103)]
+    #[sampler(104)]
+    noise_texture: Handle<Image>,
     alpha_mode: AlphaMode,
 }
 

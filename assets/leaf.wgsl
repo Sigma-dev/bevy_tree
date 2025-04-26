@@ -19,6 +19,8 @@
 @group(2) @binding(100) var<uniform> material_color: vec4<f32>;
 @group(2) @binding(101) var material_color_texture: texture_2d<f32>;
 @group(2) @binding(102) var material_color_sampler: sampler;
+@group(2) @binding(103) var noise_texture: texture_2d<f32>;
+@group(2) @binding(104) var noise_sampler: sampler;
 
 fn csin(x: f32) -> f32 {
     return sin(x) + (sin(x * 2) / 2.) + (sin(x * 4.) / 4.);
@@ -39,8 +41,8 @@ fn fragment(
     if (alpha == 0.) {
         discard;
     }
-    let color = vec4<f32>(0.2, 0.4, 0.2, 1.);
-
+    //let color = vec4<f32>(0.2, 0.4, 0.2, 1.);
+    let color = textureSample(noise_texture, noise_sampler, in.uv);
     pbr_input.material.base_color = alpha_discard(pbr_input.material, color);
 
 #ifdef PREPASS_PIPELINE
